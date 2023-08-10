@@ -7,7 +7,7 @@ import { FaRegCheckCircle } from "react-icons/fa"
 
 type DeleteModalProps = {
   setShowDeleteModal: (val: boolean) => void
-  item?: IsEmployee
+  item: IsEmployee
 }
 
 const DeleteModal = ({ setShowDeleteModal, item }: DeleteModalProps) => {
@@ -52,39 +52,37 @@ const DeleteModal = ({ setShowDeleteModal, item }: DeleteModalProps) => {
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
                 onClick={() => {
-                  if (item) {
-                    deleteEmployee(item?.user_id)
-                    setShowDeleteModal(false)
-                    toast.custom(t => (
-                      <div
-                        className={`${
-                          t.visible ? "animate-enter" : "animate-leave"
-                        } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col items-center py-6 px-8 ring-1 ring-black ring-opacity-5`}
-                      >
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center p-2 bg-green-50">
-                          <FaRegCheckCircle
-                            size={20}
-                            className="text-green-800"
-                          />
-                        </div>
-
-                        <h3 className="mt-4 font-semibold">Success!</h3>
-
-                        <p className="text-sm text-gray-700 text-center">
-                          The user has been successfully deleted. You can now
-                          breathe a sigh of relief as the task is complete.
-                        </p>
-
-                        <button
-                          type="button"
-                          onClick={() => toast.dismiss(t.id)}
-                          className="inline-flex w-full justify-center rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 mt-4"
-                        >
-                          Ok, thanks
-                        </button>
+                  deleteEmployee(item.user_id)
+                  setShowDeleteModal(false)
+                  toast.custom(t => (
+                    <div
+                      className={`${
+                        t.visible ? "animate-enter" : "animate-leave"
+                      } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col items-center py-6 px-8 ring-1 ring-black ring-opacity-5`}
+                    >
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center p-2 bg-green-50">
+                        <FaRegCheckCircle
+                          size={20}
+                          className="text-green-800"
+                        />
                       </div>
-                    ))
-                  }
+
+                      <h3 className="mt-4 font-semibold">Success!</h3>
+
+                      <p className="text-sm text-gray-700 text-center">
+                        The user has been successfully deleted. You can now
+                        breathe a sigh of relief as the task is complete.
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => toast.dismiss(t.id)}
+                        className="inline-flex w-full justify-center rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 mt-4"
+                      >
+                        Ok, thanks
+                      </button>
+                    </div>
+                  ))
                 }}
               >
                 Yes, Delete

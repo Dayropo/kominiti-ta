@@ -27,7 +27,7 @@ const Employees = () => {
 
   const [showEditModal, setShowEditModal] = useState<boolean>(false)
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
-  const [item, setItem] = useState<IsEmployee>()
+  const [item, setItem] = useState<IsEmployee | any>()
 
   const dragItemRef = useRef<any>(null)
   const dragOverItemRef = useRef<any>(null)

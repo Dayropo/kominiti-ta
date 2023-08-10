@@ -6,7 +6,7 @@ import { useContext } from "react"
 
 type EditModalProps = {
   setShowEditModal: (val: boolean) => void
-  item?: IsEmployee
+  item: IsEmployee
 }
 
 const validationSchema = yup.object().shape({
@@ -20,19 +20,16 @@ const EditModal = ({ setShowEditModal, item }: EditModalProps) => {
   const { updateEmployee } = useContext(EmployeeContext) as EmployeeContextType
   const formik = useFormik({
     initialValues: {
-      fullname: item?.fullname,
+      fullname: item.fullname,
     },
     enableReinitialize: true,
     validationSchema,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: (values, { resetForm }) => {
-      if (item && values.fullname) {
-        updateEmployee(item.user_id, values.fullname)
-
-        resetForm()
-        setShowEditModal(false)
-      }
+      updateEmployee(item.user_id, values.fullname)
+      resetForm()
+      setShowEditModal(false)
     },
   })
 
