@@ -1,6 +1,6 @@
 import { DragEvent, useContext, useRef, useState } from "react"
 import Header from "../components/ui/Header"
-import { FiSearch } from "react-icons/fi"
+import { FiSearch, FiX } from "react-icons/fi"
 import { EmployeeContext } from "../context/EmployeeContext"
 import { EmployeeContextType, IsEmployee } from "../@types/employee"
 import { PiDotsSixVerticalBold } from "react-icons/pi"
@@ -8,6 +8,8 @@ import { RiEditLine, RiDeleteBin5Line } from "react-icons/ri"
 import Pagination from "../components/ui/Pagination"
 import EditModal from "../components/ui/EditModal"
 import DeleteModal from "../components/ui/DeleteModal"
+import toast from "react-hot-toast"
+import { FaRegCheckCircle } from "react-icons/fa"
 
 const Employees = () => {
   const { employees, setEmployees, isLoading } = useContext(
@@ -57,6 +59,31 @@ const Employees = () => {
 
     setEmployees(_employees)
     localStorage.setItem("employees", JSON.stringify(_employees))
+
+    toast.custom(t => (
+      <div
+        className={`${
+          t.visible ? "animate-enter" : "animate-leave"
+        } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto relative flex gap-4 items-center py-4 px-6 ring-1 ring-black ring-opacity-5`}
+      >
+        <div className="w-8 h-8 rounded-full flex items-center justify-center p-2 bg-green-50">
+          <FaRegCheckCircle size={20} className="text-green-800" />
+        </div>
+
+        <p className="text-sm text-gray-700">
+          The items have been successfully rearranged. You can now breathe a
+          sigh of relief as the task is complete.
+        </p>
+
+        <button
+          type="button"
+          onClick={() => toast.dismiss(t.id)}
+          className="absolute top-0.5 right-0.5 bg-gray-50 w-6 h-6 p-1.5 rounded-full flex items-center justify-center"
+        >
+          <FiX size={20} />
+        </button>
+      </div>
+    ))
   }
 
   return (

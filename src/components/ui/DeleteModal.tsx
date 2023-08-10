@@ -1,6 +1,9 @@
+import { RiDeleteBin5Line } from "react-icons/ri"
 import { EmployeeContextType, IsEmployee } from "../../@types/employee"
 import { EmployeeContext } from "../../context/EmployeeContext"
 import { useContext } from "react"
+import toast from "react-hot-toast"
+import { FaRegCheckCircle } from "react-icons/fa"
 
 type DeleteModalProps = {
   setShowDeleteModal: (val: boolean) => void
@@ -23,10 +26,10 @@ const DeleteModal = ({ setShowDeleteModal, item }: DeleteModalProps) => {
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
             <div className="py-2.5 px-6">
-              <h3 className="font-semibold">Edit</h3>
+              <div className="bg-green-50 p-2 flex items-center justify-center rounded-full w-8 h-8">
+                <RiDeleteBin5Line size={16} className="text-green-800" />
+              </div>
             </div>
-
-            <hr />
 
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 relative">
               <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -52,6 +55,35 @@ const DeleteModal = ({ setShowDeleteModal, item }: DeleteModalProps) => {
                   if (item) {
                     deleteEmployee(item?.user_id)
                     setShowDeleteModal(false)
+                    toast.custom(t => (
+                      <div
+                        className={`${
+                          t.visible ? "animate-enter" : "animate-leave"
+                        } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex flex-col items-center py-6 px-8 ring-1 ring-black ring-opacity-5`}
+                      >
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center p-2 bg-green-50">
+                          <FaRegCheckCircle
+                            size={20}
+                            className="text-green-800"
+                          />
+                        </div>
+
+                        <h3 className="mt-4 font-semibold">Success!</h3>
+
+                        <p className="text-sm text-gray-700 text-center">
+                          The user has been successfully deleted. You can now
+                          breathe a sigh of relief as the task is complete.
+                        </p>
+
+                        <button
+                          type="button"
+                          onClick={() => toast.dismiss(t.id)}
+                          className="inline-flex w-full justify-center rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 mt-4"
+                        >
+                          Ok, thanks
+                        </button>
+                      </div>
+                    ))
                   }
                 }}
               >
