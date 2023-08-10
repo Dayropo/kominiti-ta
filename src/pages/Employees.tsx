@@ -10,7 +10,7 @@ import EditModal from "../components/ui/EditModal"
 import DeleteModal from "../components/ui/DeleteModal"
 
 const Employees = () => {
-  const { employees, setEmployees } = useContext(
+  const { employees, setEmployees, isLoading } = useContext(
     EmployeeContext
   ) as EmployeeContextType
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -56,10 +56,11 @@ const Employees = () => {
     dragOverItemRef.current = null
 
     setEmployees(_employees)
+    localStorage.setItem("employees", JSON.stringify(_employees))
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 font-poppins">
+    <div className="min-h-screen bg-gray-50 font-poppins">
       {showEditModal && (
         <EditModal setShowEditModal={setShowEditModal} item={item} />
       )}
@@ -70,16 +71,16 @@ const Employees = () => {
 
       <Header />
 
-      <div className="px-8 py-4">
+      <div className="sm:px-8 px-4 py-4">
         <div className="flex justify-between items-center">
-          <p className="font-semibold ">Employees</p>
+          <p className="font-semibold sm:text-base text-sm">Employees</p>
 
-          <div className="relative">
+          <div className="relative sm:w-64 w-40">
             <input
               type="search"
               name=""
               id=""
-              className="rounded-full py-2 pl-10 pr-4 text-sm focus:outline-1 focus:outline-green-300"
+              className="rounded-full w-full py-2 pl-10 pr-4 text-sm focus:outline-1 focus:outline-green-300"
             />
             <FiSearch
               className="text-green-600 absolute left-2.5 top-2 cursor-pointer"
@@ -89,69 +90,83 @@ const Employees = () => {
         </div>
 
         {/* employees list */}
-        {employees.length > 0 && (
-          <div className="mt-6 space-y-6">
-            <div className="bg-white px-8 py-4 w-full rounded-sm flex items-center gap-8 cursor-default">
-              <div className="w-1/5 font-semibold text-sm"></div>
-              <div className="w-1/5 font-semibold text-sm ">id</div>
-              <div className="w-1/2 font-semibold text-sm">Full name</div>
-              <div className="w-[10%] font-semibold text-sm">Action</div>
-            </div>
-
-            <div className="space-y-3">
-              {currentEmployees.map((employee: IsEmployee, index) => (
-                <div
-                  className="bg-white px-8 py-4 w-full rounded-sm flex items-center gap-8 cursor-pointer"
-                  key={employee.user_id}
-                  draggable
-                  onDragStart={() => handleDragStart(employee)}
-                  onDragEnter={() => handleDragEnter(employee)}
-                  onDragEnd={handleSort}
-                  onDragOver={handleDragOver}
-                >
-                  <div className="w-1/5 text-sm">
-                    <PiDotsSixVerticalBold size={20} />
+        {!isLoading && (
+          <>
+            {employees.length > 0 && (
+              <div className="mt-6 space-y-6">
+                <div className="bg-white px-8 py-4 w-full rounded-sm flex sm:flex-nowrap flex-wrap items-center sm:gap-8 gap-2.5 cursor-default">
+                  <div className="sm:w-1/5 sm:block hidden text-sm"></div>
+                  <div className="sm:w-1/5 w-1/4 font-semibold text-sm ">
+                    id
                   </div>
-                  <div className="w-1/5 text-sm ">{employee.user_id}</div>
-                  <div className="w-1/2 text-sm">{employee.fullname}</div>
-                  <div className="w-[10%] text-sm flex gap-8">
-                    <RiEditLine
-                      size={16}
-                      className="text-green-800 hover:text-green-500"
-                      onClick={() => {
-                        setShowEditModal(true)
-                        setItem(employee)
-                      }}
-                    />
-
-                    <RiDeleteBin5Line
-                      size={16}
-                      className="text-green-800 hover:text-green-500"
-                      onClick={() => {
-                        setShowDeleteModal(true)
-                        setItem(employee)
-                      }}
-                    />
+                  <div className="sm:w-1/2 w-2/5 font-semibold text-sm">
+                    Full name
+                  </div>
+                  <div className="sm:w-[10%] w-1/4 font-semibold text-sm">
+                    Action
                   </div>
                 </div>
-              ))}
-            </div>
 
-            <div className="bg-white px-8 py-4 w-full rounded-sm flex justify-between items-center cursor-default">
-              <div className="text-sm font-semibold">{`Showing ${
-                indexOfFirstEmployee + 1
-              } - ${indexOfFirstEmployee + currentEmployees.length} of ${
-                employees.length
-              } entries`}</div>
+                <div className="space-y-3">
+                  {currentEmployees.map((employee: IsEmployee) => (
+                    <div
+                      className="bg-white px-8 py-4 w-full rounded-sm flex sm:flex-nowrap flex-wrap items-center sm:gap-8 gap-2.5 cursor-pointer"
+                      key={employee.user_id}
+                      draggable
+                      onDragStart={() => handleDragStart(employee)}
+                      onDragEnter={() => handleDragEnter(employee)}
+                      onDragEnd={handleSort}
+                      onDragOver={handleDragOver}
+                    >
+                      <div className="sm:w-1/5 sm:block hidden text-sm">
+                        <PiDotsSixVerticalBold size={20} />
+                      </div>
+                      <div className="sm:w-1/5 w-1/4 text-sm ">
+                        {employee.user_id}
+                      </div>
+                      <div className="sm:w-1/2 w-2/5 text-sm">
+                        {employee.fullname}
+                      </div>
+                      <div className="sm:w-[10%] w-1/4 text-sm flex sm:gap-8 gap-2.5">
+                        <RiEditLine
+                          size={16}
+                          className="text-green-800 hover:text-green-500"
+                          onClick={() => {
+                            setShowEditModal(true)
+                            setItem(employee)
+                          }}
+                        />
 
-              <Pagination
-                itemsPerPage={employeesPerPage}
-                totalItems={employees.length}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-              />
-            </div>
-          </div>
+                        <RiDeleteBin5Line
+                          size={16}
+                          className="text-green-800 hover:text-green-500"
+                          onClick={() => {
+                            setShowDeleteModal(true)
+                            setItem(employee)
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-white px-8 py-4 w-full rounded-sm flex sm:justify-between justify-center items-center cursor-default">
+                  <div className="text-sm font-semibold sm:block hidden">{`Showing ${
+                    indexOfFirstEmployee + 1
+                  } - ${indexOfFirstEmployee + currentEmployees.length} of ${
+                    employees.length
+                  } entries`}</div>
+
+                  <Pagination
+                    itemsPerPage={employeesPerPage}
+                    totalItems={employees.length}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                  />
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from "react"
+import { ReactNode, createContext, useEffect, useState } from "react"
 import data from "../utils/users.json"
 import { EmployeeContextType, IsEmployee } from "../@types/employee"
 
@@ -12,12 +12,14 @@ const EmployeeContextProvider = ({
   children,
 }: EmployeeContextProviderProps) => {
   const [employees, setEmployees] = useState<IsEmployee[]>(data)
+  const [isLoading, setIsLoading] = useState(true)
 
   const updateEmployee = (id: number, fullname: string) => {
     employees.filter((employee: IsEmployee) => {
       if (employee.user_id === id) {
         employee.fullname = fullname
         setEmployees([...employees])
+        localStorage.setItem("employees", JSON.stringify([...employees]))
       }
     })
   }
@@ -27,14 +29,36 @@ const EmployeeContextProvider = ({
       (employee: IsEmployee) => employee.user_id !== id
     )
     setEmployees(filteredArray)
+    localStorage.setItem("employees", JSON.stringify(filteredArray))
   }
 
-  
+  useEffect(() => {
+    let isMounted = true
+    const _employees = localStorage.getItem("employees")
 
+    if (_employees) {
+      isMounted && setEmployees(JSON.parse(_employees))
+      isMounted && setIsLoading(false)
+    } else {
+      setTimeout(() => {
+        isMounted && setIsLoading(false)
+      }, 1000)
+    }
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   return (
     <EmployeeContext.Provider
-      value={{ employees, setEmployees, updateEmployee, deleteEmployee,  }}
+      value={{
+        employees,
+        setEmployees,
+        updateEmployee,
+        deleteEmployee,
+        isLoading,
+      }}
     >
       {children}
     </EmployeeContext.Provider>

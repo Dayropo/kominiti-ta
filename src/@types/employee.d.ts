@@ -13,4 +13,5 @@ export type EmployeeContextType = {
   setEmployees: Dispatch<SetStateAction<IsEmployee[]>>
   updateEmployee: (id: number, fullname: string) => void
   deleteEmployee: (id: number) => void
+  isLoading: boolean
 }
