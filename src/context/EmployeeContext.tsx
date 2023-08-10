@@ -26,15 +26,15 @@ const EmployeeContextProvider = ({
     const filteredArray = employees.filter(
       (employee: IsEmployee) => employee.user_id !== id
     )
-    console.log(filteredArray)
     setEmployees(filteredArray)
   }
 
-  console.log({ employees })
+  
+
 
   return (
     <EmployeeContext.Provider
-      value={{ employees, updateEmployee, deleteEmployee }}
+      value={{ employees, setEmployees, updateEmployee, deleteEmployee,  }}
     >
       {children}
     </EmployeeContext.Provider>

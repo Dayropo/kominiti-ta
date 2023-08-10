@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { DragEvent, useContext, useRef, useState } from "react"
 import Header from "../components/ui/Header"
 import { FiSearch } from "react-icons/fi"
 import { EmployeeContext } from "../context/EmployeeContext"
@@ -10,7 +10,9 @@ import EditModal from "../components/ui/EditModal"
 import DeleteModal from "../components/ui/DeleteModal"
 
 const Employees = () => {
-  const { employees } = useContext(EmployeeContext) as EmployeeContextType
+  const { employees, setEmployees } = useContext(
+    EmployeeContext
+  ) as EmployeeContextType
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [employeesPerPage] = useState<number>(6)
 
@@ -24,6 +26,37 @@ const Employees = () => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false)
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [item, setItem] = useState<IsEmployee>()
+
+  const dragItemRef = useRef<any>(null)
+  const dragOverItemRef = useRef<any>(null)
+
+  const handleDragStart = (employee: IsEmployee) => {
+    const index = employees.findIndex(item => item.user_id === employee.user_id)
+
+    dragItemRef.current = index
+  }
+
+  const handleDragEnter = (employee: IsEmployee) => {
+    const index = employees.findIndex(item => item.user_id === employee.user_id)
+
+    dragOverItemRef.current = index
+  }
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+  }
+
+  const handleSort = () => {
+    let _employees = [...employees]
+    const draggedItem = _employees.splice(dragItemRef.current, 1)[0]
+
+    _employees.splice(dragOverItemRef.current, 0, draggedItem)
+
+    dragItemRef.current = null
+    dragOverItemRef.current = null
+
+    setEmployees(_employees)
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 font-poppins">
@@ -66,10 +99,15 @@ const Employees = () => {
             </div>
 
             <div className="space-y-3">
-              {currentEmployees.map((employee: IsEmployee) => (
+              {currentEmployees.map((employee: IsEmployee, index) => (
                 <div
                   className="bg-white px-8 py-4 w-full rounded-sm flex items-center gap-8 cursor-pointer"
                   key={employee.user_id}
+                  draggable
+                  onDragStart={() => handleDragStart(employee)}
+                  onDragEnter={() => handleDragEnter(employee)}
+                  onDragEnd={handleSort}
+                  onDragOver={handleDragOver}
                 >
                   <div className="w-1/5 text-sm">
                     <PiDotsSixVerticalBold size={20} />
